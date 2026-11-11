@@ -13,10 +13,13 @@ const text = tv({
       body: 'font-outfit text-[15px] leading-[21px]',
       caption: 'font-outfit text-[13px] leading-[18px]',
       tabLabel: 'font-outfit-medium text-[12px] leading-[16px]',
+      tabLabelActive: 'font-outfit-semibold text-[12px] leading-[16px]',
+      initials: 'font-outfit-bold text-[15px]',
     },
     tone: {
       ink: 'text-ink',
       muted: 'text-muted',
+      inactive: 'text-nav-inactive',
       accent: 'text-accent-text',
       hero: 'text-hero-ink',
       heroSub: 'text-hero-sub',
