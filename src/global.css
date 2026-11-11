@@ -1,3 +1,92 @@
 @import 'tailwindcss';
 @import 'uniwind';
 @import 'heroui-native/styles';
+
+@theme {
+  /* Core */
+  --color-ground: #fff3f5;
+  --color-ink: #2e1f27;
+  --color-accent-text: #b02f5e;
+
+  /* Brand and hero */
+  --color-primary: #c93c6e;
+  --color-primary-foreground: #ffffff;
+  --color-hero: #f9b9cb;
+  --color-hero-ink: #3f1627;
+  --color-hero-sub: #5e2840;
+  --color-nav-inactive: #7a6470;
+
+  /* Pastel tiles */
+  --color-tile-butter: #fff0d1;
+  --color-tile-lilac: #ebe3fb;
+  --color-tile-mint: #ddf1e4;
+  --color-tile-sky: #dcebfa;
+
+  /* Hairlines */
+  --color-hairline: #f3e3e8;
+
+  /* Radii. --radius and --field-radius are theme-independent in HeroUI, so they
+     live here (not in a light/dark variant) to keep all themes identical. */
+  --radius: 1.5rem;
+  --field-radius: 1.625rem;
+  --radius-hero: 28px;
+  --radius-card: 24px;
+  --radius-tile: 22px;
+  --radius-input: 26px;
+
+  /* Spacing steps used by the system (gutter = screen edge padding) */
+  --spacing-gutter: 20px;
+  --spacing-section: 28px;
+  --spacing-touch: 44px;
+
+  /* Shadows: only white surfaces float; pastels and the hero have none */
+  --shadow-card: 0 6px 20px rgba(46, 31, 39, 0.07);
+  --shadow-float: 0 10px 30px rgba(46, 31, 39, 0.16);
+
+  /* Outfit: React Native needs one family per weight. Use font-outfit-*. */
+  --font-outfit: 'Outfit_400Regular';
+  --font-outfit-medium: 'Outfit_500Medium';
+  --font-outfit-semibold: 'Outfit_600SemiBold';
+  --font-outfit-bold: 'Outfit_700Bold';
+}
+
+/* Map the Blush tokens onto HeroUI's theme variables (light only). */
+@layer theme {
+  :root {
+    @variant light {
+      --background: var(--color-ground);
+      --foreground: var(--color-ink);
+
+      --surface: #ffffff;
+      --surface-foreground: var(--color-ink);
+      --surface-secondary: #fdeaef;
+      --surface-secondary-foreground: var(--color-ink);
+      --surface-tertiary: #fbdfe7;
+      --surface-tertiary-foreground: var(--color-ink);
+
+      --overlay: #ffffff;
+      --overlay-foreground: var(--color-ink);
+
+      --muted: #6b5560;
+
+      --default: #f8e6ec;
+      --default-foreground: var(--color-ink);
+
+      --accent: var(--color-primary);
+      --accent-foreground: #ffffff;
+
+      --field-background: #ffffff;
+      --field-foreground: var(--color-ink);
+      --field-placeholder: #6b5560;
+      --field-border: transparent;
+
+      --border: var(--color-hairline);
+      --separator: var(--color-hairline);
+      --focus: var(--color-primary);
+      --link: var(--color-accent-text);
+
+      --surface-shadow: 0 6px 20px rgba(46, 31, 39, 0.07);
+      --field-shadow: 0 6px 20px rgba(46, 31, 39, 0.07);
+    }
+  }
+}
