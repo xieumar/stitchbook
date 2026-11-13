@@ -1,12 +1,13 @@
+import { InputGroup, Label, TextField } from 'heroui-native';
 import type { ComponentRef, Ref } from 'react';
-import { TextInput, View, type TextInputProps } from 'react-native';
+import type { TextInputProps } from 'react-native';
 
 import { UNIT_LABEL } from '@/lib';
 
 import { Text } from '../text';
 
 /** The underlying text input instance, for `focus()` when chaining fields. */
-export type MeasurementInputRef = ComponentRef<typeof TextInput>;
+export type MeasurementInputRef = ComponentRef<typeof InputGroup.Input>;
 
 export type MeasurementInputProps = {
   label: string;
@@ -32,7 +33,7 @@ export function sanitizeMeasurementText(text: string): string {
 
 /**
  * Large one-handed measurement field: 56px tall, 20px text (never zooms on iOS),
- * decimal keypad and the unit shown as a fixed suffix.
+ * decimal keypad and the unit shown as a fixed suffix. Built on HeroUI TextField.
  */
 export function MeasurementInput({
   label,
@@ -46,12 +47,12 @@ export function MeasurementInput({
   className,
 }: MeasurementInputProps) {
   return (
-    <View className={className}>
-      <Text variant="caption" tone="muted" className="mb-1 ml-1">
-        {label}
-      </Text>
-      <View className="h-[56px] flex-row items-center rounded-input bg-surface px-5 shadow-card">
-        <TextInput
+    <TextField className={className}>
+      <Label className="mb-1 ml-1">
+        <Label.Text className="font-outfit text-[13px] text-muted">{label}</Label.Text>
+      </Label>
+      <InputGroup>
+        <InputGroup.Input
           ref={ref}
           value={value}
           onChangeText={(text) => onChangeText(sanitizeMeasurementText(text))}
@@ -64,12 +65,14 @@ export function MeasurementInput({
           submitBehavior="submit"
           placeholder="0"
           accessibilityLabel={`${label} in ${UNIT_LABEL[unit]}`}
-          className="h-full flex-1 font-outfit-semibold text-[20px] text-ink"
+          className="h-[56px] rounded-input bg-surface font-outfit-semibold text-[20px] shadow-card"
         />
-        <Text variant="body" tone="muted" className="ml-2">
-          {UNIT_LABEL[unit]}
-        </Text>
-      </View>
-    </View>
+        <InputGroup.Suffix isDecorative>
+          <Text variant="body" tone="muted" className="mr-5">
+            {UNIT_LABEL[unit]}
+          </Text>
+        </InputGroup.Suffix>
+      </InputGroup>
+    </TextField>
   );
 }
