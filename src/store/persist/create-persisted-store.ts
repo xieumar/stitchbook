@@ -30,7 +30,8 @@ export function createPersistedStore<T, P = T>(
       version,
       storage: createJSONStorage(() => storage),
       migrate: migrate as ((persisted: unknown, fromVersion: number) => T | Promise<T>) | undefined,
-      partialize: partialize as ((state: T) => T) | undefined,
+      // Spread only when set: an explicit `undefined` overrides zustand's default and crashes.
+      ...(partialize ? { partialize: partialize as unknown as (state: T) => T } : {}),
     }),
   );
 }
