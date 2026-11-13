@@ -4,6 +4,7 @@ export * from './empty-state';
 export * from './icon';
 export * from './initial-avatar';
 export * from './list';
+export * from './measurement-input';
 export * from './search-field';
 export * from './section-title';
 export * from './skeleton';
