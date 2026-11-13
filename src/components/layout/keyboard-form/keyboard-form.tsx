@@ -13,20 +13,22 @@ const TAB_BAR_SPACE = 124;
 const KEYBOARD_CLEARANCE = 32;
 
 /**
- * Screen shell for long forms. Keeps the focused field above the keyboard
- * (iOS adjusts the scroll insets itself; Android relies on the window resizing),
- * keeps taps working while the keyboard is open, and dismisses it on drag.
+ * Screen shell for long forms: same layout as <Screen>, wrapped in a
+ * KeyboardAvoidingView so the form lifts above the keyboard. It uses 'padding' on
+ * iOS and 'height' on Android (KeyboardAvoidingView listens to keyboard events, so it
+ * also works when Android is edge-to-edge). Taps keep working while the keyboard is
+ * open and dragging dismisses it. Works in Expo Go; swap in
+ * react-native-keyboard-controller's KeyboardAwareScrollView once a dev build is used.
  */
 export function KeyboardForm({ children, tabBarSpace = false }: KeyboardFormProps) {
   const bottom = (tabBarSpace ? TAB_BAR_SPACE : 32) + KEYBOARD_CLEARANCE;
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-ground">
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <SafeAreaView edges={['top']} className="flex-1 bg-ground">
         <ScrollView
-          automaticallyAdjustKeyboardInsets
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
           showsVerticalScrollIndicator={false}
@@ -34,7 +36,7 @@ export function KeyboardForm({ children, tabBarSpace = false }: KeyboardFormProp
           contentContainerStyle={{ paddingBottom: bottom }}>
           {children}
         </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
