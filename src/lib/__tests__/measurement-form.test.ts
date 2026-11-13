@@ -2,6 +2,7 @@ import {
   buildFormTexts,
   convertFormTexts,
   hasAnyValue,
+  nextFieldKey,
   templateFieldKeys,
   toMeasurementValues,
 } from '../measurement-form';
@@ -26,6 +27,20 @@ const template: MeasurementTemplate = {
 describe('templateFieldKeys', () => {
   it('lists keys across categories in order', () => {
     expect(templateFieldKeys(template)).toEqual(['bust', 'waist', 'hip']);
+  });
+});
+
+describe('nextFieldKey', () => {
+  const keys = ['bust', 'waist', 'hip'];
+
+  it('returns the following key, crossing category boundaries', () => {
+    expect(nextFieldKey(keys, 'bust')).toBe('waist');
+    expect(nextFieldKey(keys, 'waist')).toBe('hip');
+  });
+
+  it('returns null after the last field and for unknown keys', () => {
+    expect(nextFieldKey(keys, 'hip')).toBeNull();
+    expect(nextFieldKey(keys, 'nope')).toBeNull();
   });
 });
 

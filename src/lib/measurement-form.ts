@@ -8,6 +8,12 @@ export function templateFieldKeys(template: MeasurementTemplate): string[] {
   return template.categories.flatMap((category) => category.fields.map((field) => field.key));
 }
 
+/** The field to focus after `key`, or null when `key` is the last (or unknown). */
+export function nextFieldKey(keys: readonly string[], key: string): string | null {
+  const index = keys.indexOf(key);
+  return index === -1 ? null : (keys[index + 1] ?? null);
+}
+
 /** Initial form text: empty for every field, or prefilled from an existing record's values. */
 export function buildFormTexts(
   template: MeasurementTemplate,
