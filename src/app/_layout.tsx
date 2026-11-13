@@ -14,6 +14,8 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Uniwind } from 'uniwind';
 
+import { useStoresHydrated } from '@/store';
+
 SplashScreen.preventAutoHideAsync();
 
 // Blush is a light-only palette.
@@ -27,11 +29,15 @@ export default function RootLayout() {
     Outfit_700Bold,
   });
 
-  useEffect(() => {
-    if (fontsLoaded || fontError) SplashScreen.hideAsync();
-  }, [fontsLoaded, fontError]);
+  const storesHydrated = useStoresHydrated();
+  const ready = (fontsLoaded || !!fontError) && storesHydrated;
 
-  if (!fontsLoaded && !fontError) return null;
+  // The splash stays up until fonts and persisted stores are both ready.
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync();
+  }, [ready]);
+
+  if (!ready) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

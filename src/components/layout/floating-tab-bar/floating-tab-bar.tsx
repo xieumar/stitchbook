@@ -23,7 +23,7 @@ export function FloatingTabBar({ onAddPress }: FloatingTabBarProps) {
     <>
       {/* Registers the routes; the visible bar below uses the triggers directly. */}
       <TabList style={{ display: 'none' }}>
-        <TabTrigger name="index" href="/(tabs)/index" />
+        <TabTrigger name="index" href="/" />
         <TabTrigger name="clients" href="/clients" />
         <TabTrigger name="measures" href="/measures" />
         <TabTrigger name="settings" href="/settings" />
