@@ -1,12 +1,10 @@
 import { router } from 'expo-router';
 
 import { Screen, ScreenHeader } from '@/components/layout';
-import { Icon, IconBadge, ListCard, ListRow, useAppToast } from '@/components/ui';
+import { Icon, IconBadge, ListCard, ListRow } from '@/components/ui';
 
-/** The centre "Add" sheet: register a client, or (soon) start a measurement. */
+/** The centre "Add" sheet: register a client, or start a measurement. */
 export function AddPage() {
-  const toast = useAppToast();
-
   return (
     <Screen tabBarSpace={false}>
       <ScreenHeader title="Add" onBack={() => router.back()} />
@@ -23,7 +21,7 @@ export function AddPage() {
           detail="Pick a client, then record measurements"
           leading={<IconBadge name="resize-outline" tone="mint" />}
           trailing={<Icon name="chevron-forward" tone="muted" size={20} />}
-          onPress={() => toast.info('Coming soon', 'Recording measurements arrives in a later update.')}
+          onPress={() => router.replace('/measurement/new')}
         />
       </ListCard>
     </Screen>

@@ -52,6 +52,10 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
           tone="mint"
           title="No measurements yet"
           message={`Measurements saved for ${client.name} will be listed here.`}
+          actionLabel="Record measurements"
+          onAction={() =>
+            router.push({ pathname: '/measurement/new', params: { clientId: client.id } })
+          }
         />
       ) : null}
       {tab === 'stylebook' ? (
