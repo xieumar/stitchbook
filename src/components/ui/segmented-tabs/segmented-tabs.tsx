@@ -12,6 +12,8 @@ export type SegmentedTabsProps<T extends string> = {
   onChange: (value: T) => void;
   /** Horizontally scrollable list, for many or long labels. */
   scrollable?: boolean;
+  /** Smaller labels, so several tabs fit the width without scrolling. */
+  compact?: boolean;
   className?: string;
 };
 
@@ -24,6 +26,7 @@ export function SegmentedTabs<T extends string>({
   value,
   onChange,
   scrollable = false,
+  compact = false,
   className,
 }: SegmentedTabsProps<T>) {
   const triggers = options.map((option) => (
@@ -31,7 +34,9 @@ export function SegmentedTabs<T extends string>({
       key={option.value}
       value={option.value}
       accessibilityLabel={option.accessibilityLabel ?? option.label}>
-      <Tabs.Label className="font-outfit-semibold text-[15px]">{option.label}</Tabs.Label>
+      <Tabs.Label className={`font-outfit-semibold ${compact ? 'text-[13px]' : 'text-[15px]'}`}>
+        {option.label}
+      </Tabs.Label>
     </Tabs.Trigger>
   ));
 
