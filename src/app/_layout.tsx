@@ -12,6 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { HeroUINativeProvider } from 'heroui-native';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import { Uniwind } from 'uniwind';
 
 import { useStoresHydrated } from '@/store';
