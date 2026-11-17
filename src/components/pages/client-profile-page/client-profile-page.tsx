@@ -3,8 +3,9 @@ import { useState } from 'react';
 
 import { ClientActivityList, ClientOverview } from '@/components/clients';
 import { Screen, ScreenHeader } from '@/components/layout';
-import { EmptyState, SegmentedTabs, type SegmentedTabsOption } from '@/components/ui';
-import { useClient, useClientActivity } from '@/hooks';
+import { RecordHistoryList } from '@/components/measurements';
+import { EmptyState, PillButton, SegmentedTabs, type SegmentedTabsOption } from '@/components/ui';
+import { useClient, useClientActivity, useClientRecords } from '@/hooks';
 
 type ProfileTab = 'overview' | 'measurements' | 'stylebook' | 'activity';
 
@@ -23,7 +24,11 @@ export type ClientProfilePageProps = {
 export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
   const client = useClient(clientId);
   const activity = useClientActivity(clientId);
+  const records = useClientRecords(clientId);
   const [tab, setTab] = useState<ProfileTab>('overview');
+
+  const recordMeasurements = () =>
+    router.push({ pathname: '/measurement/new', params: { clientId } });
 
   if (!client) {
     return (
@@ -47,16 +52,21 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
 
       {tab === 'overview' ? <ClientOverview client={client} /> : null}
       {tab === 'measurements' ? (
-        <EmptyState
-          icon="resize-outline"
-          tone="mint"
-          title="No measurements yet"
-          message={`Measurements saved for ${client.name} will be listed here.`}
-          actionLabel="Record measurements"
-          onAction={() =>
-            router.push({ pathname: '/measurement/new', params: { clientId: client.id } })
-          }
-        />
+        records.length === 0 ? (
+          <EmptyState
+            icon="resize-outline"
+            tone="mint"
+            title="No measurements yet"
+            message={`Measurements saved for ${client.name} will be listed here.`}
+            actionLabel="Record measurements"
+            onAction={recordMeasurements}
+          />
+        ) : (
+          <>
+            <PillButton label="New measurements" icon="add" onPress={recordMeasurements} />
+            <RecordHistoryList records={records} />
+          </>
+        )
       ) : null}
       {tab === 'stylebook' ? (
         <EmptyState
