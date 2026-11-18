@@ -64,12 +64,26 @@ export function TemplateDetailPage({ templateId }: TemplateDetailPageProps) {
         subtitle={`${templateFieldCount(template)} measurements in ${template.categories.length} groups`}
       />
       <Tag label={isPredefined ? 'Built-in · read-only' : 'Custom'} tone={isPredefined ? 'sky' : 'mint'} />
-      <PillButton
-        label={isPredefined ? 'Duplicate to customise' : 'Duplicate'}
-        icon="copy-outline"
-        tone="soft"
-        onPress={duplicate}
-      />
+      <View className="flex-row gap-3">
+        {isPredefined ? null : (
+          <PillButton
+            label="Edit"
+            icon="create-outline"
+            tone="soft"
+            className="flex-1"
+            onPress={() =>
+              router.push({ pathname: '/templates/[id]/edit', params: { id: template.id } })
+            }
+          />
+        )}
+        <PillButton
+          label={isPredefined ? 'Duplicate to customise' : 'Duplicate'}
+          icon="copy-outline"
+          tone="soft"
+          className="flex-1"
+          onPress={duplicate}
+        />
+      </View>
       <View className="gap-section">
         {template.categories.map((category) => (
           <View key={category.id} className="gap-3">

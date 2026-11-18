@@ -7,4 +7,5 @@ export * from './measurement-edit-page';
 export * from './measurement-form-page';
 export * from './measures-page';
 export * from './template-detail-page';
+export * from './template-form-page';
 export * from './templates-page';
