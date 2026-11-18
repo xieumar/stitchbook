@@ -1,4 +1,5 @@
 import {
+  moveItem,
   slugifyKey,
   templateToDrafts,
   toTemplateInput,
@@ -70,5 +71,20 @@ describe('templateToDrafts', () => {
       () => `id${n++}`,
     );
     expect(drafts[0].fields[0]).toEqual({ id: 'id0', key: 'chest', label: 'Chest' });
+  });
+});
+
+describe('moveItem', () => {
+  it('swaps with the neighbour and never mutates the input', () => {
+    const items = ['a', 'b', 'c'];
+    expect(moveItem(items, 1, -1)).toEqual(['b', 'a', 'c']);
+    expect(moveItem(items, 1, 1)).toEqual(['a', 'c', 'b']);
+    expect(items).toEqual(['a', 'b', 'c']);
+  });
+
+  it('does nothing at the ends or out of range', () => {
+    expect(moveItem(['a', 'b'], 0, -1)).toEqual(['a', 'b']);
+    expect(moveItem(['a', 'b'], 1, 1)).toEqual(['a', 'b']);
+    expect(moveItem(['a', 'b'], 5, -1)).toEqual(['a', 'b']);
   });
 });

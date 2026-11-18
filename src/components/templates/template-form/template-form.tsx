@@ -4,10 +4,13 @@ import { View } from 'react-native';
 import { FormField, PillButton, SectionTitle, Text } from '@/components/ui';
 import {
   createId,
+  moveItem,
   toTemplateInput,
   validateTemplateDraft,
   type DraftCategory,
 } from '@/lib';
+
+import { RowActions } from './row-actions';
 
 export type TemplateFormProps = {
   initialName?: string;
@@ -61,7 +64,7 @@ export function TemplateForm({
         isRequired
       />
 
-      {categories.map((category) => (
+      {categories.map((category, categoryIndex) => (
         <View key={category.id} className="gap-3">
           <FormField
             label="Group name"
@@ -69,19 +72,51 @@ export function TemplateForm({
             onChangeText={(label) => updateCategory(category.id, (c) => ({ ...c, label }))}
             placeholder="e.g. Upper body"
           />
-          {category.fields.map((field) => (
-            <FormField
-              key={field.id}
-              label="Measurement"
-              value={field.label}
-              onChangeText={(label) =>
-                updateCategory(category.id, (c) => ({
-                  ...c,
-                  fields: c.fields.map((f) => (f.id === field.id ? { ...f, label } : f)),
-                }))
-              }
-              placeholder="e.g. Chest"
-            />
+          <RowActions
+            label={category.label.trim() || 'group'}
+            canMoveUp={categoryIndex > 0}
+            canMoveDown={categoryIndex < categories.length - 1}
+            onMoveUp={() => setCategories((all) => moveItem(all, categoryIndex, -1))}
+            onMoveDown={() => setCategories((all) => moveItem(all, categoryIndex, 1))}
+            onRemove={() => setCategories((all) => all.filter((c) => c.id !== category.id))}
+          />
+          {category.fields.map((field, fieldIndex) => (
+            <View key={field.id} className="gap-2">
+              <FormField
+                label="Measurement"
+                value={field.label}
+                onChangeText={(label) =>
+                  updateCategory(category.id, (c) => ({
+                    ...c,
+                    fields: c.fields.map((f) => (f.id === field.id ? { ...f, label } : f)),
+                  }))
+                }
+                placeholder="e.g. Chest"
+              />
+              <RowActions
+                label={field.label.trim() || 'measurement'}
+                canMoveUp={fieldIndex > 0}
+                canMoveDown={fieldIndex < category.fields.length - 1}
+                onMoveUp={() =>
+                  updateCategory(category.id, (c) => ({
+                    ...c,
+                    fields: moveItem(c.fields, fieldIndex, -1),
+                  }))
+                }
+                onMoveDown={() =>
+                  updateCategory(category.id, (c) => ({
+                    ...c,
+                    fields: moveItem(c.fields, fieldIndex, 1),
+                  }))
+                }
+                onRemove={() =>
+                  updateCategory(category.id, (c) => ({
+                    ...c,
+                    fields: c.fields.filter((f) => f.id !== field.id),
+                  }))
+                }
+              />
+            </View>
           ))}
           <PillButton
             label="Add measurement"

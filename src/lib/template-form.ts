@@ -69,3 +69,12 @@ export function toTemplateInput(
   }
   return { name: name.trim(), categories: result };
 }
+
+/** Returns a copy with the item at `index` moved one place up (-1) or down (+1). Out of range is a no-op. */
+export function moveItem<T>(items: readonly T[], index: number, direction: -1 | 1): T[] {
+  const target = index + direction;
+  const copy = [...items];
+  if (index < 0 || index >= copy.length || target < 0 || target >= copy.length) return copy;
+  [copy[index], copy[target]] = [copy[target], copy[index]];
+  return copy;
+}
