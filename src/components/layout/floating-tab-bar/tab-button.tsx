@@ -17,8 +17,8 @@ export function TabButton({ label, icon, activeIcon, isFocused, ref, ...props }:
   return (
     <Pressable
       ref={ref}
-      {...props}
       accessibilityRole="tab"
+      {...props}
       accessibilityLabel={label}
       accessibilityState={{ selected: Boolean(isFocused) }}
       style={{ flexDirection: 'column' }}

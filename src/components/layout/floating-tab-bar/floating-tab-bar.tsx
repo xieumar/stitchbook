@@ -2,17 +2,15 @@ import { TabTrigger } from 'expo-router/ui';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AddButton } from '@/components/ui';
-
 import { TabButton } from './tab-button';
 
 export type FloatingTabBarProps = {
-  /** The raised centre button (add client / start measuring). */
+  /** The centre Add button (add client / start measuring). */
   onAddPress: () => void;
 };
 
 /**
- * Floating pill tab bar: Home, Clients, raised Add, Measures, Settings.
+ * Floating pill tab bar: Home, Clients, Add, Measures, Settings.
  * 74px tall, inset 14px from the screen edges. Must be rendered inside
  * expo-router's <Tabs>, alongside a <TabList> (direct child of <Tabs>) that
  * declares the routes: this component only draws the visible buttons.
@@ -31,9 +29,14 @@ export function FloatingTabBar({ onAddPress }: FloatingTabBarProps) {
         <TabButton label="Clients" icon="people-outline" activeIcon="people" />
       </TabTrigger>
 
-      <View className="w-[64px] items-center" style={{ transform: [{ translateY: -16 }] }}>
-        <AddButton size={56} label="Add" onPress={onAddPress} />
-      </View>
+      {/* Opens the add screen rather than a tab, so it is a plain button, never "selected". */}
+      <TabButton
+        label="Add"
+        icon="add-circle-outline"
+        activeIcon="add-circle"
+        accessibilityRole="button"
+        onPress={onAddPress}
+      />
 
       <TabTrigger name="measures" asChild>
         <TabButton label="Measures" icon="resize-outline" activeIcon="resize" />

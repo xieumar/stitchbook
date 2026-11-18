@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { ClientActivityList, ClientOverview } from '@/components/clients';
 import { Screen, ScreenHeader } from '@/components/layout';
 import { RecordHistoryList } from '@/components/measurements';
+import { StylebookTab } from '@/components/stylebook';
 import { EmptyState, PillButton, SegmentedTabs, type SegmentedTabsOption } from '@/components/ui';
-import { useClient, useClientActivity, useClientRecords } from '@/hooks';
+import { useClient, useClientActivity, useClientRecords, useStylebook } from '@/hooks';
 
 type ProfileTab = 'overview' | 'measurements' | 'stylebook' | 'activity';
 
@@ -25,6 +26,7 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
   const client = useClient(clientId);
   const activity = useClientActivity(clientId);
   const records = useClientRecords(clientId);
+  const stylebook = useStylebook(clientId);
   const [tab, setTab] = useState<ProfileTab>('overview');
 
   const recordMeasurements = () =>
@@ -48,7 +50,7 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
   return (
     <Screen tabBarSpace={false}>
       <ScreenHeader title="Profile" />
-      <SegmentedTabs options={TABS} value={tab} onChange={setTab} compact />
+      <SegmentedTabs options={TABS} value={tab} onChange={setTab} compact fullWidth />
 
       {tab === 'overview' ? <ClientOverview client={client} /> : null}
       {tab === 'measurements' ? (
@@ -69,12 +71,7 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
         )
       ) : null}
       {tab === 'stylebook' ? (
-        <EmptyState
-          icon="color-palette-outline"
-          tone="butter"
-          title="Stylebook is empty"
-          message={`Style preferences and reference images for ${client.name} will be kept here.`}
-        />
+        <StylebookTab clientId={clientId} clientName={client.name} entry={stylebook} />
       ) : null}
       {tab === 'activity' ? <ClientActivityList entries={activity} /> : null}
     </Screen>

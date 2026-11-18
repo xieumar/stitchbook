@@ -97,6 +97,63 @@ describe('measurements history', () => {
   });
 });
 
+describe('stylebook', () => {
+  it('merges preferences into the client entry and logs the change', () => {
+    const { setPreferences } = useStylebookStore.getState();
+
+    setPreferences('c1', { styles: ['Kaftan'], fit: 'Relaxed' });
+    setPreferences('c1', { colors: ['Green'] });
+
+    const entry = useStylebookStore.getState().entries.c1;
+    expect(entry.styles).toEqual(['Kaftan']);
+    expect(entry.fit).toBe('Relaxed');
+    expect(entry.colors).toEqual(['Green']);
+    expect(useActivityStore.getState().entries.map((e) => e.type)).toEqual([
+      'stylebook.updated',
+      'stylebook.updated',
+    ]);
+  });
+});
+
+describe('reference images', () => {
+  it('adds and removes images for one client and logs both changes', () => {
+    const { addReferenceImage, removeReferenceImage } = useStylebookStore.getState();
+
+    addReferenceImage('c1', 'file:///reference-images/a.jpg');
+    addReferenceImage('c1', 'file:///reference-images/b.jpg');
+    removeReferenceImage('c1', 'file:///reference-images/a.jpg');
+
+    expect(useStylebookStore.getState().entries.c1.referenceImages).toEqual([
+      'file:///reference-images/b.jpg',
+    ]);
+    expect(useActivityStore.getState().entries.map((e) => e.message)).toEqual([
+      'Removed a reference image',
+      'Added a reference image',
+      'Added a reference image',
+    ]);
+  });
+
+  it('ignores removing an image for a client without a stylebook', () => {
+    useStylebookStore.getState().removeReferenceImage('nobody', 'x');
+    expect(useStylebookStore.getState().entries.nobody).toBeUndefined();
+    expect(useActivityStore.getState().entries).toHaveLength(0);
+  });
+});
+
+describe('alteration notes', () => {
+  it('lists the newest note first and keeps each client separate', () => {
+    const { addAlterationNote } = useStylebookStore.getState();
+
+    addAlterationNote('c1', 'First');
+    addAlterationNote('c1', 'Second');
+    addAlterationNote('c2', 'Other client');
+
+    const { entries } = useStylebookStore.getState();
+    expect(entries.c1.alterationNotes.map((n) => n.text)).toEqual(['Second', 'First']);
+    expect(entries.c2.alterationNotes.map((n) => n.text)).toEqual(['Other client']);
+  });
+});
+
 describe('activity logging', () => {
   it('records client changes newest first', () => {
     const id = useClientsStore.getState().addClient({ name: 'Ada' });
