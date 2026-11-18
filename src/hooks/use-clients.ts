@@ -1,7 +1,16 @@
 import { useMemo } from 'react';
 
-import { countByStatus, filterClients, sortClients, type ClientStatusFilter } from '@/lib';
+import {
+  countByStatus,
+  filterByListFilter,
+  filterClients,
+  sortClients,
+  type ClientListFilter,
+  type ClientStatusFilter,
+} from '@/lib';
 import { useClientsStore } from '@/store';
+
+import { useAllRecords } from './use-measurement-records';
 
 /** Every client, newest data first-class: derived from the store, never stored itself. */
 export function useAllClients(): ClientRecord[] {
@@ -10,15 +19,22 @@ export function useAllClients(): ClientRecord[] {
 }
 
 /** Clients in one status that match the search, sorted A to Z, plus counts for both statuses. */
-export function useClientList(query: string, status: ClientStatusFilter) {
+export function useClientList(
+  query: string,
+  status: ClientStatusFilter,
+  listFilter: ClientListFilter = 'all',
+) {
   const all = useAllClients();
+  const records = useAllRecords();
   return useMemo(
     () => ({
-      clients: sortClients(filterClients(all, { query, status })),
+      clients: sortClients(
+        filterByListFilter(filterClients(all, { query, status }), records, listFilter),
+      ),
       counts: countByStatus(all),
       total: all.length,
     }),
-    [all, query, status],
+    [all, records, query, status, listFilter],
   );
 }
 

@@ -1,4 +1,13 @@
-import { activeClients, countMeasuredClients, greeting, heroSummary } from '../dashboard';
+import {
+  activeClients,
+  countMeasuredClients,
+  dashboardStats,
+  filterByListFilter,
+  greeting,
+  heroSummary,
+  parseClientListFilter,
+  type ClientListFilter,
+} from '../dashboard';
 
 const client = (id: string, archivedAt?: string): ClientRecord =>
   ({ id, name: id, createdAt: '2026-01-01T00:00:00.000Z', archivedAt }) as ClientRecord;
@@ -41,5 +50,50 @@ describe('greeting', () => {
     expect(greeting({ ownerName: ' Folake ', businessName: 'Stitches' })).toBe('Hello, Folake');
     expect(greeting({ businessName: 'Stitches' })).toBe('Hello, Stitches');
     expect(greeting({ businessName: '' })).toBe('Hello');
+  });
+});
+
+const NOW = new Date('2026-06-10T12:00:00.000Z');
+const daysAgo = (days: number) => new Date(NOW.getTime() - days * 86_400_000).toISOString();
+
+const timed = (id: string, createdAt: string, archivedAt?: string): ClientRecord =>
+  ({ id, name: id, createdAt, archivedAt }) as ClientRecord;
+const recordAt = (clientId: string, updatedAt: string): MeasurementRecord =>
+  ({ clientId, updatedAt }) as MeasurementRecord;
+
+describe('dashboard stats and filters', () => {
+  const clients = [
+    timed('new', daysAgo(2)),
+    timed('old-measured', daysAgo(40)),
+    timed('old-stale', daysAgo(40)),
+    timed('gone', daysAgo(1), daysAgo(0)),
+  ];
+  const records = [
+    recordAt('old-measured', daysAgo(3)),
+    recordAt('old-stale', daysAgo(30)),
+    recordAt('gone', daysAgo(1)),
+  ];
+  const ids = (filter: ClientListFilter) =>
+    filterByListFilter(clients, records, filter, NOW).map((c) => c.id);
+
+  it('slices active clients for each tile', () => {
+    expect(ids('not-measured')).toEqual(['new']);
+    expect(ids('added-this-week')).toEqual(['new']);
+    expect(ids('updated-this-week')).toEqual(['old-measured']);
+  });
+
+  it('keeps every tile count equal to the list it opens', () => {
+    expect(dashboardStats(clients, records, NOW)).toEqual({
+      total: 3,
+      notMeasured: 1,
+      addedThisWeek: 1,
+      updatedThisWeek: 1,
+    });
+  });
+
+  it('reads route params safely', () => {
+    expect(parseClientListFilter('not-measured')).toBe('not-measured');
+    expect(parseClientListFilter('nonsense')).toBe('all');
+    expect(parseClientListFilter(undefined)).toBe('all');
   });
 });

@@ -1,6 +1,13 @@
 import { useMemo } from 'react';
 
-import { countMeasuredClients, greeting, heroSummary, type HeroSummary } from '@/lib';
+import {
+  countMeasuredClients,
+  dashboardStats,
+  greeting,
+  heroSummary,
+  type DashboardStats,
+  type HeroSummary,
+} from '@/lib';
 import { useSettingsStore } from '@/store';
 
 import { useAllClients } from './use-clients';
@@ -9,6 +16,7 @@ import { useAllRecords } from './use-measurement-records';
 export type DashboardData = {
   greeting: string;
   hero: HeroSummary;
+  stats: DashboardStats;
 };
 
 /** Everything the Home screen shows, derived from the stores and never stored itself. */
@@ -23,6 +31,7 @@ export function useDashboard(): DashboardData {
     return {
       greeting: greeting({ ownerName, businessName }),
       hero: heroSummary(measured, total),
+      stats: dashboardStats(clients, records),
     };
   }, [clients, records, ownerName, businessName]);
 }

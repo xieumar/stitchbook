@@ -1,8 +1,8 @@
 import { TabTrigger } from 'expo-router/ui';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TabButton } from './tab-button';
+import { useTabBarOffset } from './use-tab-bar-offset';
 
 export type FloatingTabBarProps = {
   /** The centre Add button (add client / start measuring). */
@@ -16,12 +16,12 @@ export type FloatingTabBarProps = {
  * declares the routes: this component only draws the visible buttons.
  */
 export function FloatingTabBar({ onAddPress }: FloatingTabBarProps) {
-  const insets = useSafeAreaInsets();
+  const offset = useTabBarOffset();
 
   return (
     <View
       className="absolute left-[14px] right-[14px] h-[74px] flex-row items-center rounded-full bg-surface px-2 shadow-float"
-      style={{ bottom: Math.max(insets.bottom, 14) }}>
+      style={{ bottom: offset }}>
       <TabTrigger name="index" asChild>
         <TabButton label="Home" icon="home-outline" activeIcon="home" />
       </TabTrigger>

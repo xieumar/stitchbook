@@ -2,13 +2,14 @@ import type { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTabBarContentSpace } from '../floating-tab-bar/use-tab-bar-offset';
+
 export type KeyboardFormProps = {
   children: ReactNode;
   /** Reserve room for the floating tab bar. Off for screens pushed above it. */
   tabBarSpace?: boolean;
 };
 
-const TAB_BAR_SPACE = 124;
 /** Extra scroll room so the last field and the save button clear the keyboard. */
 const KEYBOARD_CLEARANCE = 32;
 
@@ -21,7 +22,8 @@ const KEYBOARD_CLEARANCE = 32;
  * react-native-keyboard-controller's KeyboardAwareScrollView once a dev build is used.
  */
 export function KeyboardForm({ children, tabBarSpace = false }: KeyboardFormProps) {
-  const bottom = (tabBarSpace ? TAB_BAR_SPACE : 32) + KEYBOARD_CLEARANCE;
+  const tabBarContentSpace = useTabBarContentSpace();
+  const bottom = (tabBarSpace ? tabBarContentSpace : 32) + KEYBOARD_CLEARANCE;
 
   return (
     <KeyboardAvoidingView
