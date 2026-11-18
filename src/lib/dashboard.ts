@@ -1,3 +1,5 @@
+import { filterClients, sortClients } from './clients';
+
 /** Clients who are not archived: the ones the dashboard counts. */
 export function activeClients(clients: readonly ClientRecord[]): ClientRecord[] {
   return clients.filter((client) => !client.archivedAt);
@@ -118,4 +120,20 @@ export function dashboardStats(
     addedThisWeek: count('added-this-week'),
     updatedThisWeek: count('updated-this-week'),
   };
+}
+
+export type QuickSearchResult = { results: ClientRecord[]; total: number };
+
+/**
+ * Home quick search: active clients matching a name or phone, A to Z, cut to `limit`.
+ * `total` is the full match count so the screen can offer "See all". A blank query finds nothing.
+ */
+export function quickSearchClients(
+  clients: readonly ClientRecord[],
+  query: string,
+  limit = 5,
+): QuickSearchResult {
+  if (query.trim() === '') return { results: [], total: 0 };
+  const matches = sortClients(filterClients(clients, { query, status: 'active' }));
+  return { results: matches.slice(0, limit), total: matches.length };
 }

@@ -6,6 +6,7 @@ import {
   greeting,
   heroSummary,
   parseClientListFilter,
+  quickSearchClients,
   type ClientListFilter,
 } from '../dashboard';
 
@@ -95,5 +96,34 @@ describe('dashboard stats and filters', () => {
     expect(parseClientListFilter('not-measured')).toBe('not-measured');
     expect(parseClientListFilter('nonsense')).toBe('all');
     expect(parseClientListFilter(undefined)).toBe('all');
+  });
+});
+
+describe('quickSearchClients', () => {
+  const named = (name: string, phone?: string, archivedAt?: string) =>
+    ({ id: name, name, phone, archivedAt }) as ClientRecord;
+  const clients = [
+    named('Zara Bello', '0803 111 2222'),
+    named('Amara Okafor'),
+    named('Amaka Obi', undefined, '2026-01-01T00:00:00.000Z'),
+    named('Tunde Bello'),
+  ];
+
+  it('finds nothing for a blank query', () => {
+    expect(quickSearchClients(clients, '  ')).toEqual({ results: [], total: 0 });
+  });
+
+  it('matches name or phone, active only, A to Z', () => {
+    expect(quickSearchClients(clients, 'bello').results.map((c) => c.name)).toEqual([
+      'Tunde Bello',
+      'Zara Bello',
+    ]);
+    expect(quickSearchClients(clients, '0803').results.map((c) => c.name)).toEqual(['Zara Bello']);
+    expect(quickSearchClients(clients, 'ama').results.map((c) => c.name)).toEqual(['Amara Okafor']);
+  });
+
+  it('cuts the list to the limit but reports the full count', () => {
+    expect(quickSearchClients(clients, 'o', 2)).toMatchObject({ total: 3 });
+    expect(quickSearchClients(clients, 'o', 2).results).toHaveLength(2);
   });
 });

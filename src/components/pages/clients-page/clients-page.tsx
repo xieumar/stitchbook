@@ -22,8 +22,9 @@ import {
 import { useStoresHydrated } from '@/store';
 
 export function ClientsPage() {
-  const params = useLocalSearchParams<{ filter?: string }>();
-  const [query, setQuery] = useState('');
+  const params = useLocalSearchParams<{ filter?: string; query?: string }>();
+  // Home's "See all results" opens this tab with ?query=...
+  const [query, setQuery] = useState(params.query ?? '');
   const [status, setStatus] = useState<ClientStatusFilter>('active');
   // A dashboard tile opens this tab with ?filter=..., e.g. "not-measured".
   const [listFilter, setListFilter] = useState<ClientListFilter>(() =>
@@ -36,6 +37,10 @@ export function ClientsPage() {
     setListFilter(parseClientListFilter(params.filter));
     if (params.filter) setStatus('active');
   }, [params.filter]);
+
+  useEffect(() => {
+    if (params.query) setQuery(params.query);
+  }, [params.query]);
 
   const clearFilter = () => {
     setListFilter('all');
