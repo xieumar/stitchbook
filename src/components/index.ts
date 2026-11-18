@@ -1,4 +1,5 @@
 export * from './clients';
+export * from './dashboard';
 export * from './layout';
 export * from './measurements';
 export * from './pages';

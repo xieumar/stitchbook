@@ -14,7 +14,7 @@ export type SegmentedTabsProps<T extends string> = {
   scrollable?: boolean;
   /** Smaller labels, so several tabs fit the width without scrolling. */
   compact?: boolean;
-  /** Stretch to the full width, with every tab the same width (profile tabs). */
+  /** Stretch to the full width: each tab fits its label, then shares the spare room (profile tabs). */
   fullWidth?: boolean;
   className?: string;
 };
@@ -36,9 +36,11 @@ export function SegmentedTabs<T extends string>({
     <Tabs.Trigger
       key={option.value}
       value={option.value}
-      className={fullWidth && !scrollable ? 'flex-1' : undefined}
+      className={fullWidth && !scrollable ? 'flex-auto' : undefined}
       accessibilityLabel={option.accessibilityLabel ?? option.label}>
-      <Tabs.Label className={`font-outfit-semibold ${compact ? 'text-[13px]' : 'text-[15px]'}`}>
+      <Tabs.Label
+        numberOfLines={1}
+        className={`font-outfit-semibold ${compact ? 'text-[13px]' : 'text-[15px]'}`}>
         {option.label}
       </Tabs.Label>
     </Tabs.Trigger>

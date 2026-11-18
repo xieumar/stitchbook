@@ -1,4 +1,5 @@
 export * from './clients';
+export * from './dashboard';
 export * from './dates';
 export * from './id';
 export * from './measurement-form';
