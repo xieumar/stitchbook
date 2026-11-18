@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { Screen } from '@/components/layout';
 import { RecordHistoryList } from '@/components/measurements';
-import { EmptyState, Text } from '@/components/ui';
+import { EmptyState, PillButton, Text } from '@/components/ui';
 import { useAllClients, useAllRecords } from '@/hooks';
 
 /** The Measures tab: every saved record across clients, newest first. */
@@ -18,6 +18,13 @@ export function MeasuresPage() {
   return (
     <Screen>
       <Text variant="screenTitle">Measures</Text>
+      <PillButton
+        label="Templates"
+        icon="options-outline"
+        tone="soft"
+        className="self-start"
+        onPress={() => router.push('/templates')}
+      />
       {records.length === 0 ? (
         <EmptyState
           icon="resize-outline"

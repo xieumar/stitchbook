@@ -1,1 +1,1 @@
-export {};
+export * from './template-list';
