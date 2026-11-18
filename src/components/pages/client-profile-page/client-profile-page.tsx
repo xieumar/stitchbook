@@ -50,7 +50,7 @@ export function ClientProfilePage({ clientId }: ClientProfilePageProps) {
   return (
     <Screen tabBarSpace={false}>
       <ScreenHeader title="Profile" />
-      <SegmentedTabs options={TABS} value={tab} onChange={setTab} compact />
+      <SegmentedTabs options={TABS} value={tab} onChange={setTab} compact fullWidth />
 
       {tab === 'overview' ? <ClientOverview client={client} /> : null}
       {tab === 'measurements' ? (
