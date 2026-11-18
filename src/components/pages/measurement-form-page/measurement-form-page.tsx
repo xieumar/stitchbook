@@ -76,8 +76,8 @@ export function MeasurementFormPage({ clientId: initialClientId, templateId: ini
       <MeasurementForm
         template={template}
         initialUnit={defaultUnit}
-        onSubmit={({ unit, values }) => {
-          addRecord({ clientId: client.id, templateSnapshot: template, unit, values });
+        onSubmit={({ unit, values, notes }) => {
+          addRecord({ clientId: client.id, templateSnapshot: template, unit, values, notes });
           toast.success('Measurements saved', client.name);
           router.replace({ pathname: '/client/[id]', params: { id: client.id } });
         }}
