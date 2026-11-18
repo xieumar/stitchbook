@@ -9,6 +9,7 @@ type ActivityType =
   | 'measurement.added'
   | 'measurement.updated'
   | 'measurement.duplicated'
+  | 'measurement.deleted'
   | 'stylebook.updated'
   | 'template.added'
   | 'template.updated'

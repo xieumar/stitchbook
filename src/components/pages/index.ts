@@ -2,3 +2,7 @@ export * from './add-page';
 export * from './client-form-page';
 export * from './client-profile-page';
 export * from './clients-page';
+export * from './measurement-detail-page';
+export * from './measurement-edit-page';
+export * from './measurement-form-page';
+export * from './measures-page';

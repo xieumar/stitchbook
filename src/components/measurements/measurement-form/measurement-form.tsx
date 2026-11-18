@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 
 import {
+  FormField,
   MeasurementInput,
   PillButton,
   SectionTitle,
@@ -25,8 +26,15 @@ export type MeasurementFormProps = {
   initialUnit: MeasurementUnit;
   /** Prefill when editing or duplicating an existing record. */
   initialValues?: readonly MeasurementValue[];
+  /** Prefill the notes when editing an existing record. */
+  initialNotes?: string;
   submitLabel?: string;
-  onSubmit: (result: { unit: MeasurementUnit; values: MeasurementValue[] }) => void;
+  onSubmit: (result: {
+    unit: MeasurementUnit;
+    values: MeasurementValue[];
+    /** Trimmed; undefined when left empty. */
+    notes: string | undefined;
+  }) => void;
 };
 
 /**
@@ -40,10 +48,12 @@ export function MeasurementForm({
   template,
   initialUnit,
   initialValues,
+  initialNotes,
   submitLabel = 'Save measurements',
   onSubmit,
 }: MeasurementFormProps) {
   const [unit, setUnit] = useState<MeasurementUnit>(initialUnit);
+  const [notes, setNotes] = useState(initialNotes ?? '');
   const [texts, setTexts] = useState<FormTexts>(() => buildFormTexts(template, initialValues));
   const fieldKeys = useMemo(() => templateFieldKeys(template), [template]);
   const inputRefs = useRef<Record<string, MeasurementInputRef | null>>({});
@@ -87,11 +97,23 @@ export function MeasurementForm({
         </View>
       ))}
 
+      <FormField
+        label="Notes"
+        value={notes}
+        onChangeText={setNotes}
+        placeholder="Fit preferences, posture, anything to remember"
+        multiline
+      />
+
       <PillButton
         label={submitLabel}
         isDisabled={!hasAnyValue(texts)}
         onPress={() =>
-          onSubmit({ unit, values: toMeasurementValues(template, texts, initialValues) })
+          onSubmit({
+            unit,
+            values: toMeasurementValues(template, texts, initialValues),
+            notes: notes.trim() || undefined,
+          })
         }
       />
     </View>
