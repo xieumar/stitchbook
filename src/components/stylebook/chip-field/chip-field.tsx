@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { FormField, Icon, PillButton, Text } from '@/components/ui';
@@ -8,12 +7,22 @@ export type ChipFieldProps = {
   label: string;
   placeholder?: string;
   chips: readonly string[];
+  /** Text typed but not added yet. Owned by the form so Save can include it. */
+  text: string;
+  onTextChange: (text: string) => void;
   onChange: (chips: string[]) => void;
 };
 
 /** A list of short values (styles, colours, fabrics): type one, add it, tap a chip to remove it. */
-export function ChipField({ label, placeholder, chips, onChange }: ChipFieldProps) {
-  const [text, setText] = useState('');
+export function ChipField({
+  label,
+  placeholder,
+  chips,
+  text,
+  onTextChange,
+  onChange,
+}: ChipFieldProps) {
+  const setText = onTextChange;
 
   const add = () => {
     onChange(addChip(chips, text));
