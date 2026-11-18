@@ -62,9 +62,20 @@ describe('measurements history', () => {
     expect(useMeasurementsStore.getState().records[original]).toEqual(before);
   });
 
-  it('exposes no way to remove a record', () => {
-    expect(useMeasurementsStore.getState()).not.toHaveProperty('removeRecord');
-    expect(useMeasurementsStore.getState()).not.toHaveProperty('deleteRecord');
+  it('deletes only the chosen record', () => {
+    const { addRecord, deleteRecord } = useMeasurementsStore.getState();
+    const a = addRecord({ clientId: 'c1', templateSnapshot: template, unit: 'cm', values });
+    const b = addRecord({ clientId: 'c1', templateSnapshot: template, unit: 'cm', values });
+
+    deleteRecord(a);
+
+    const records = useMeasurementsStore.getState().records;
+    expect(records[a]).toBeUndefined();
+    expect(records[b]).toBeDefined();
+  });
+
+  it('ignores deleting an unknown record', () => {
+    expect(() => useMeasurementsStore.getState().deleteRecord('nope')).not.toThrow();
   });
 
   it('keeps the saved template snapshot when a custom template is edited later', () => {

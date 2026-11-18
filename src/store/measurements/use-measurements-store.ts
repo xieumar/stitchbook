@@ -5,12 +5,13 @@ import { createPersistedStore } from '../persist';
 
 type MeasurementsState = {
   /**
-   * Append-only by convention: there is no remove action. New and duplicated
-   * measurements are always new records; only an explicit updateRecord edits one.
+   * New and duplicated measurements are always new records; only an explicit
+   * updateRecord edits one, and only an explicit deleteRecord removes one.
    */
   records: Record<string, MeasurementRecord>;
   addRecord: (input: MeasurementInput) => string;
   duplicateRecord: (id: string) => string | undefined;
+  deleteRecord: (id: string) => void;
   updateRecord: (
     id: string,
     patch: Partial<Pick<MeasurementRecord, 'unit' | 'measuredAt' | 'notes' | 'values'>>,
@@ -63,6 +64,20 @@ export const useMeasurementsStore = createPersistedStore<MeasurementsState>(
         refId: newId,
       });
       return newId;
+    },
+
+    deleteRecord: (id) => {
+      const existing = get().records[id];
+      if (!existing) return;
+      set((state) => {
+        const { [id]: _removed, ...records } = state.records;
+        return { records };
+      });
+      logActivity({
+        type: 'measurement.deleted',
+        message: `Deleted ${existing.templateSnapshot.name} measurements`,
+        clientId: existing.clientId,
+      });
     },
 
     updateRecord: (id, patch) => {

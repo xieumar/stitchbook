@@ -1,9 +1,18 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { HeroCard, Screen, ScreenHeader } from '@/components/layout';
 import { RecordValues } from '@/components/measurements';
-import { EmptyState, ListCard, ListRow, PillButton, Tag, useAppToast } from '@/components/ui';
+import {
+  ConfirmDialog,
+  EmptyState,
+  ListCard,
+  ListRow,
+  PillButton,
+  Tag,
+  useAppToast,
+} from '@/components/ui';
 import { useClient, useRecord } from '@/hooks';
 import { formatDate } from '@/lib';
 import { useMeasurementsStore } from '@/store';
@@ -18,6 +27,16 @@ export function MeasurementDetailPage({ recordId }: MeasurementDetailPageProps) 
   const client = useClient(record?.clientId);
   const toast = useAppToast();
   const duplicateRecord = useMeasurementsStore((state) => state.duplicateRecord);
+  const deleteRecord = useMeasurementsStore((state) => state.deleteRecord);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  /** Leaves the screen first so the "not found" state never flashes. */
+  const remove = () => {
+    setConfirmingDelete(false);
+    router.back();
+    deleteRecord(recordId);
+    toast.success('Measurements deleted');
+  };
 
   /** Copies the record as a new one dated now, then opens it so it can be adjusted. */
   const duplicate = () => {
@@ -68,6 +87,13 @@ export function MeasurementDetailPage({ recordId }: MeasurementDetailPageProps) 
           className="flex-1"
           onPress={duplicate}
         />
+        <PillButton
+          label="Delete"
+          icon="trash-outline"
+          tone="danger"
+          className="flex-1"
+          onPress={() => setConfirmingDelete(true)}
+        />
       </View>
       <RecordValues record={record} />
       {record.notes ? (
@@ -75,6 +101,15 @@ export function MeasurementDetailPage({ recordId }: MeasurementDetailPageProps) 
           <ListRow title={record.notes} detail="Notes" />
         </ListCard>
       ) : null}
+      <ConfirmDialog
+        visible={confirmingDelete}
+        title="Delete these measurements?"
+        message="This record is removed permanently. Your other records for this client are not affected."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={remove}
+        onCancel={() => setConfirmingDelete(false)}
+      />
     </Screen>
   );
 }
