@@ -115,6 +115,20 @@ describe('stylebook', () => {
   });
 });
 
+describe('alteration notes', () => {
+  it('lists the newest note first and keeps each client separate', () => {
+    const { addAlterationNote } = useStylebookStore.getState();
+
+    addAlterationNote('c1', 'First');
+    addAlterationNote('c1', 'Second');
+    addAlterationNote('c2', 'Other client');
+
+    const { entries } = useStylebookStore.getState();
+    expect(entries.c1.alterationNotes.map((n) => n.text)).toEqual(['Second', 'First']);
+    expect(entries.c2.alterationNotes.map((n) => n.text)).toEqual(['Other client']);
+  });
+});
+
 describe('activity logging', () => {
   it('records client changes newest first', () => {
     const id = useClientsStore.getState().addClient({ name: 'Ada' });
