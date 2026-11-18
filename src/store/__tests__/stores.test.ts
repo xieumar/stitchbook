@@ -115,6 +115,31 @@ describe('stylebook', () => {
   });
 });
 
+describe('reference images', () => {
+  it('adds and removes images for one client and logs both changes', () => {
+    const { addReferenceImage, removeReferenceImage } = useStylebookStore.getState();
+
+    addReferenceImage('c1', 'file:///reference-images/a.jpg');
+    addReferenceImage('c1', 'file:///reference-images/b.jpg');
+    removeReferenceImage('c1', 'file:///reference-images/a.jpg');
+
+    expect(useStylebookStore.getState().entries.c1.referenceImages).toEqual([
+      'file:///reference-images/b.jpg',
+    ]);
+    expect(useActivityStore.getState().entries.map((e) => e.message)).toEqual([
+      'Removed a reference image',
+      'Added a reference image',
+      'Added a reference image',
+    ]);
+  });
+
+  it('ignores removing an image for a client without a stylebook', () => {
+    useStylebookStore.getState().removeReferenceImage('nobody', 'x');
+    expect(useStylebookStore.getState().entries.nobody).toBeUndefined();
+    expect(useActivityStore.getState().entries).toHaveLength(0);
+  });
+});
+
 describe('alteration notes', () => {
   it('lists the newest note first and keeps each client separate', () => {
     const { addAlterationNote } = useStylebookStore.getState();

@@ -2,10 +2,12 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { ListCard, ListRow, PillButton, SectionTitle, Tag, Text, useAppToast } from '@/components/ui';
+import { useReferenceImages } from '@/hooks';
 import { hasPreferences } from '@/lib';
 import { useStylebookStore } from '@/store';
 
 import { AlterationNotes } from '../alteration-notes';
+import { ReferenceGallery } from '../reference-gallery';
 
 export type StylebookTabProps = {
   clientId: string;
@@ -31,6 +33,9 @@ function TagGroup({ title, values }: { title: string; values: readonly string[] 
 export function StylebookTab({ clientId, clientName, entry }: StylebookTabProps) {
   const toast = useAppToast();
   const addAlterationNote = useStylebookStore((state) => state.addAlterationNote);
+  const addReferenceImage = useStylebookStore((state) => state.addReferenceImage);
+  const removeReferenceImage = useStylebookStore((state) => state.removeReferenceImage);
+  const { pickImages, discardImage } = useReferenceImages();
   const edit = () => router.push({ pathname: '/client/[id]/stylebook', params: { id: clientId } });
   const saved = hasPreferences(entry);
 
@@ -59,6 +64,20 @@ export function StylebookTab({ clientId, clientName, entry }: StylebookTabProps)
       ) : (
         <Text tone="muted">Style preferences for {clientName} will be kept here.</Text>
       )}
+      <ReferenceGallery
+        images={entry?.referenceImages ?? []}
+        onAdd={async () => {
+          const uris = await pickImages();
+          if (uris.length === 0) return;
+          uris.forEach((uri) => addReferenceImage(clientId, uri));
+          toast.success(uris.length === 1 ? 'Image added' : `${uris.length} images added`);
+        }}
+        onRemove={(uri) => {
+          removeReferenceImage(clientId, uri);
+          discardImage(uri);
+          toast.success('Image removed');
+        }}
+      />
       <AlterationNotes
         notes={entry?.alterationNotes ?? []}
         onAdd={(text) => {

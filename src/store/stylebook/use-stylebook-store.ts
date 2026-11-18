@@ -65,6 +65,7 @@ export const useStylebookStore = createPersistedStore<StylebookState>(
           ...entry,
           referenceImages: entry.referenceImages.filter((u) => u !== uri),
         }));
+        logActivity({ type: 'stylebook.updated', message: 'Removed a reference image', clientId });
       },
     };
   },
