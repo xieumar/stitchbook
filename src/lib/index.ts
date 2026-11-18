@@ -3,5 +3,6 @@ export * from './dates';
 export * from './id';
 export * from './measurement-form';
 export * from './measurement-records';
+export * from './stylebook';
 export * from './units';
 export * from './template-form';

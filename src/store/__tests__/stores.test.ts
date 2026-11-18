@@ -97,6 +97,24 @@ describe('measurements history', () => {
   });
 });
 
+describe('stylebook', () => {
+  it('merges preferences into the client entry and logs the change', () => {
+    const { setPreferences } = useStylebookStore.getState();
+
+    setPreferences('c1', { styles: ['Kaftan'], fit: 'Relaxed' });
+    setPreferences('c1', { colors: ['Green'] });
+
+    const entry = useStylebookStore.getState().entries.c1;
+    expect(entry.styles).toEqual(['Kaftan']);
+    expect(entry.fit).toBe('Relaxed');
+    expect(entry.colors).toEqual(['Green']);
+    expect(useActivityStore.getState().entries.map((e) => e.type)).toEqual([
+      'stylebook.updated',
+      'stylebook.updated',
+    ]);
+  });
+});
+
 describe('activity logging', () => {
   it('records client changes newest first', () => {
     const id = useClientsStore.getState().addClient({ name: 'Ada' });
